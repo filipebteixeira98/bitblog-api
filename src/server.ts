@@ -1,8 +1,12 @@
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
 import type { CorsOptions } from 'cors';
 import cors from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 
-import { config } from './config';
+import { config } from '@/config';
+import { limiter } from '@/lib/express-rate-limit';
 
 const app = express();
 
@@ -27,6 +31,18 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+
+app.use(
+  compression({
+    threshold: 1024,
+  }),
+);
+
+app.use(helmet());
+
+app.use(limiter);
 
 app.listen(config.PORT, () => {
   console.log(`Server running: http://localhost:${config.PORT}`);
