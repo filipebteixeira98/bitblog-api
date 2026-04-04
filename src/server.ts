@@ -24,6 +24,10 @@ const corsOptions: CorsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
 app.listen(config.PORT, () => {
   console.log(`Server running: http://localhost:${config.PORT}`);
 });
