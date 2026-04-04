@@ -44,6 +44,21 @@ app.use(helmet());
 
 app.use(limiter);
 
-app.listen(config.PORT, () => {
-  console.log(`Server running: http://localhost:${config.PORT}`);
-});
+(async () => {
+  try {
+    // biome-ignore lint/correctness/noUnusedFunctionParameters: This is a health check endpoint, so we don't need to use the request parameter.
+    app.get('/health', (request, response) => {
+      response.status(200).json({ status: 'ok' });
+    });
+
+    app.listen(config.PORT, () => {
+      console.log(`Server running: http://localhost:${config.PORT}`);
+    });
+  } catch (error) {
+    console.error('Error starting server:', error);
+
+    if (process.env.NODE_ENV === 'production') {
+      process.exit(1);
+    }
+  }
+})();
