@@ -6,7 +6,10 @@ import express from 'express';
 import helmet from 'helmet';
 
 import { config } from '@/config';
+
 import { limiter } from '@/lib/express-rate-limit';
+
+import { router as v1Routes } from '@/routes/v1';
 
 const app = express();
 
@@ -46,10 +49,7 @@ app.use(limiter);
 
 (async () => {
   try {
-    // biome-ignore lint/correctness/noUnusedFunctionParameters: This is a health check endpoint, so we don't need to use the request parameter.
-    app.get('/health', (request, response) => {
-      response.status(200).json({ status: 'ok' });
-    });
+    app.use('/api/v1', v1Routes);
 
     app.listen(config.PORT, () => {
       console.log(`Server running: http://localhost:${config.PORT}`);
