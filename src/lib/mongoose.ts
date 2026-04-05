@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 
 import { config } from '@/config';
 
+import { logger } from '@/lib/winston';
+
 const clientOptions: ConnectOptions = {
   dbName: 'bitblog',
   appName: 'BitBlog API',
@@ -21,7 +23,7 @@ export const connectToDatabase = async (): Promise<void> => {
   try {
     await mongoose.connect(config.MONGO_URI, clientOptions);
 
-    console.log('Connected to MongoDB successfully', {
+    logger.info('Connected to MongoDB successfully', {
       uri: config.MONGO_URI,
       options: clientOptions,
     });
@@ -30,7 +32,7 @@ export const connectToDatabase = async (): Promise<void> => {
       throw error;
     }
 
-    console.log('An unknown error occurred while connecting to MongoDB');
+    logger.error('An unknown error occurred while connecting to MongoDB');
   }
 };
 
@@ -38,7 +40,7 @@ export const disconnectFromDatabase = async (): Promise<void> => {
   try {
     await mongoose.disconnect();
 
-    console.log('Disconnected from MongoDB successfully', {
+    logger.info('Disconnected from MongoDB successfully', {
       uri: config.MONGO_URI,
       options: clientOptions,
     });
@@ -47,7 +49,7 @@ export const disconnectFromDatabase = async (): Promise<void> => {
       throw new Error(error.message);
     }
 
-    console.log(
+    logger.error(
       'An unknown error occurred while disconnecting from MongoDB',
       error,
     );
